@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Tenant {
+  id                   String   @id @default(cuid())
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  subscriptionStatus   String   @default("incomplete")
+  adminEmail           String   @unique
+  passwordHash         String
+  businessName         String
+  tagline              String   @default("")
+  logoUrl              String?
+  themeColor           String   @default("#185FA5")
+  subdomain            String   @unique
+  customDomain         String?
+  address              String   @default("")
+  phone                String   @default("")
+  website              String   @default("")
+  license              String   @default("")
+  acceptingProjects    Boolean  @default(true)
+  offlineMessage       String   @default("")
+  services             String   @default("[]")
+  gcal                 String   @default("{}")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  projects       Project[]
+  estimates      Estimate[]
+  lineItems      EstimateLineItem[]
+  milestones     EstimateMilestone[]
+  payments       EstimatePayment[]
+  attachments    EstimateAttachment[]
+  activity       EstimateActivity[]
+  catalog        ServiceCatalog[]
+  templates      EstimateTemplate[]
+  passwordResets PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  tenantId  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  tenantId    String
+  clientName  String
+  clientEmail String
+  clientPhone String   @default("")
+  clientBiz   String   @default("")
+  clientType  String   @default("homeowner")
+  projectName String
+  projectType String   @default("")
+  address     String   @default("")
+  description String   @default("")
+  status      String   @default("pending_review")
+  startDate   String?
+  gcalSynced  Boolean  @default(false)
+  gcalEventId String?
+  gcalLink    String?
+  adminNotes  String   @default("")
+  estimateId  String?
+  createdAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model Estimate {
+  id                      String   @id @default(cuid())
+  tenantId                String
+  projectId               String?
+  documentType            String   @default("estimate")
+  documentNumber          String
+  status                  String   @default("draft")
+  clientBizName           String   @default("")
+  clientName              String   @default("")
+  clientEmail             String   @default("")
+  clientPhone             String   @default("")
+  clientType              String   @default("")
+  projectName             String   @default("")
+  projectAddress          String   @default("")
+  projectType             String   @default("")
+  scopeOfWork             String   @default("")
+  assumptions             String   @default("")
+  exclusions              String   @default("")
+  discountAmt             Float    @default(0)
+  markupRate              Float    @default(0)
+  taxRate                 Float    @default(0)
+  notes                   String   @default("")
+  contractAmount          Float    @default(0)
+  amountPaid              Float    @default(0)
+  amountDue               Float    @default(0)
+  total                   Float    @default(0)
+  paymentMethods          String   @default("{}")
+  approvedByName          String   @default("")
+  approvalSignature       String?
+  convertedToInvoiceId    String?
+  convertedFromEstimateId String?
+  milestoneId             String?
+  createdByName           String   @default("")
+  sentByName              String   @default("")
+  dateSent                String?
+  dateViewed              String?
+  dateApproved            String?
+  paidAt                  String?
+  revisionNumber          Int      @default(1)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  lineItems   EstimateLineItem[]
+  milestones  EstimateMilestone[]
+  payments    EstimatePayment[]
+  attachments EstimateAttachment[]
+  activity    EstimateActivity[]
+}
+
+model EstimateLineItem {
+  id          String @id @default(cuid())
+  tenantId    String
+  estimateId  String
+  sortOrder   Int    @default(0)
+  description String @default("")
+  qty         Float  @default(1)
+  unit        String @default("ea")
+  unitPrice   Float  @default(0)
+  discountPct Float  @default(0)
+  lineTotal   Float  @default(0)
+  category    String @default("")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+}
+
+model EstimateMilestone {
+  id           String  @id @default(cuid())
+  tenantId     String
+  estimateId   String
+  sortOrder    Int     @default(0)
+  label        String  @default("")
+  description  String  @default("")
+  amount       Float   @default(0)
+  amountBilled Float   @default(0)
+  dueDate      String?
+  status       String  @default("pending")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+}
+
+model EstimatePayment {
+  id             String @id @default(cuid())
+  tenantId       String
+  estimateId     String
+  amount         Float  @default(0)
+  method         String @default("")
+  reference      String @default("")
+  note           String @default("")
+  paidAt         String
+  recordedByName String @default("")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+}
+
+model EstimateAttachment {
+  id          String @id @default(cuid())
+  tenantId    String
+  estimateId  String
+  filename    String
+  mimeType    String @default("")
+  sizeBytes   Int    @default(0)
+  storagePath String @default("")
+  publicUrl   String @default("")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+}
+
+model EstimateActivity {
+  id          String   @id @default(cuid())
+  tenantId    String
+  estimateId  String
+  eventType   String
+  actorName   String   @default("")
+  actorType   String   @default("admin")
+  description String   @default("")
+  metadata    String   @default("{}")
+  createdAt   DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+}
+
+model ServiceCatalog {
+  id          String @id @default(cuid())
+  tenantId    String
+  description String @default("")
+  unit        String @default("ea")
+  unitPrice   Float  @default(0)
+  category    String @default("")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model EstimateTemplate {
+  id          String @id @default(cuid())
+  tenantId    String
+  name        String @default("")
+  description String @default("")
+  projectType String @default("")
+  items       String @default("[]")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
