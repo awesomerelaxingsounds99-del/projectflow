@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "next start -p ${PORT:-3000}",
-    "railway:start": "prisma migrate deploy && npm run seed && next start -p ${PORT:-3000}",
+    "start": "next start -p ${PORT:-3000} -H 0.0.0.0",
+    "railway:start": "prisma migrate deploy && npm run seed && next start -p ${PORT:-3000} -H 0.0.0.0",
     "lint": "eslint",
     "seed": "npx tsx prisma/seed.ts"
   },
