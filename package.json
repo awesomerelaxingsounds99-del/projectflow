@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "prisma generate && next build",
+    "start": "next start -p ${PORT:-3000}",
+    "railway:start": "prisma migrate deploy && npm run seed && next start -p ${PORT:-3000}",
     "lint": "eslint",
     "seed": "npx tsx prisma/seed.ts"
   },
