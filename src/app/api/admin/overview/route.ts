@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     prisma.project.findMany({
       where: { tenantId },
       orderBy: { createdAt: 'desc' },
-      take: 5,
+      take: 8,
     }),
   ])
 
@@ -26,5 +26,20 @@ export async function GET(req: NextRequest) {
   const payments = await prisma.estimatePayment.findMany({ where: { tenantId } })
   const collected = payments.reduce((s, p) => s + p.amount, 0)
 
-  return Response.json({ pendingCount, activeCount, outstanding, collected, recentProjects: projects })
+  // Attach most recent estimate per project
+  const projectIds = projects.map(p => p.id)
+  const estimates = projectIds.length
+    ? await prisma.estimate.findMany({
+        where: { projectId: { in: projectIds } },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, projectId: true, documentNumber: true, status: true, total: true, documentType: true },
+      })
+    : []
+
+  const recentProjects = projects.map(p => ({
+    ...p,
+    estimates: estimates.filter(e => e.projectId === p.id).slice(0, 1),
+  }))
+
+  return Response.json({ pendingCount, activeCount, outstanding, collected, recentProjects })
 }

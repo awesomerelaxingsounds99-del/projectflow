@@ -14,6 +14,8 @@ export async function GET(req: NextRequest) {
     where.status = 'pending_review'
   } else if (status === 'active') {
     where.status = { in: ['active', 'complete'] }
+  } else if (status === 'complete') {
+    where.status = 'complete'
   }
 
   const projects = await prisma.project.findMany({
@@ -23,7 +25,22 @@ export async function GET(req: NextRequest) {
       : { createdAt: 'desc' },
   })
 
-  return Response.json(projects)
+  // Attach estimates per project
+  const projectIds = projects.map(p => p.id)
+  const estimates = projectIds.length
+    ? await prisma.estimate.findMany({
+        where: { projectId: { in: projectIds } },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, projectId: true, documentNumber: true, status: true, total: true, documentType: true, amountPaid: true },
+      })
+    : []
+
+  const result = projects.map(p => ({
+    ...p,
+    estimates: estimates.filter(e => e.projectId === p.id),
+  }))
+
+  return Response.json(result)
 }
 
 export async function POST(req: NextRequest) {
