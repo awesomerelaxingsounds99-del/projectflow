@@ -3,9 +3,8 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { setSession } from '@/lib/auth'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' })
-
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' })
   const { sessionId } = await req.json()
   if (!sessionId) return Response.json({ error: 'Missing session' }, { status: 400 })
 

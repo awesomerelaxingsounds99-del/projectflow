@@ -3,9 +3,8 @@ import Stripe from 'stripe'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' })
-
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' })
   const { businessName, subdomain, email, password } = await req.json()
 
   if (!businessName || !subdomain || !email || !password) {
