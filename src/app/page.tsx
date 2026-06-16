@@ -13,8 +13,8 @@ export default function LandingPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <a href="#features" style={{ color: '#5A6577', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Features</a>
           <a href="#pricing" style={{ color: '#5A6577', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Pricing</a>
-          <Link href="/admin/login" style={{ color: '#5A6577', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Sign in</Link>
-          <Link href="/admin/login" style={{ background: '#185FA5', color: '#fff', padding: '8px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>Get started</Link>
+          <Link href="/login" style={{ color: '#5A6577', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Sign in</Link>
+          <Link href="/signup" style={{ background: '#185FA5', color: '#fff', padding: '8px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>Get started</Link>
         </div>
       </nav>
 
@@ -30,7 +30,7 @@ export default function LandingPage() {
           Clients submit projects, receive estimates, and approve them with a digital signature — all under your brand and domain.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/admin/login" style={{ background: '#185FA5', color: '#fff', padding: '14px 28px', borderRadius: 10, textDecoration: 'none', fontSize: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <Link href="/signup" style={{ background: '#185FA5', color: '#fff', padding: '14px 28px', borderRadius: 10, textDecoration: 'none', fontSize: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             Start for $45.99/mo
           </Link>
           <Link href="/portal/rge" style={{ background: '#fff', color: '#0F1B2D', padding: '14px 28px', borderRadius: 10, textDecoration: 'none', fontSize: 16, fontWeight: 600, border: '1.5px solid #E9EBF0' }}>
@@ -76,7 +76,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-            <Link href="/admin/login" style={{ display: 'block', textAlign: 'center', background: '#185FA5', color: '#fff', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+            <Link href="/signup" style={{ display: 'block', textAlign: 'center', background: '#185FA5', color: '#fff', padding: '13px 20px', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
               Get started
             </Link>
           </div>
@@ -98,7 +98,7 @@ export default function LandingPage() {
       <section style={{ background: '#185FA5', padding: '60px 40px', textAlign: 'center' }}>
         <h2 style={{ fontSize: 32, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', marginBottom: 16 }}>Ready to streamline your firm?</h2>
         <p style={{ color: 'rgba(255,255,255,.8)', fontSize: 16, marginBottom: 28 }}>Join MEP firms using ProjectFlow to impress clients and close projects faster.</p>
-        <Link href="/admin/login" style={{ background: '#fff', color: '#185FA5', padding: '14px 32px', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 16, display: 'inline-block' }}>
+        <Link href="/signup" style={{ background: '#fff', color: '#185FA5', padding: '14px 32px', borderRadius: 10, textDecoration: 'none', fontWeight: 700, fontSize: 16, display: 'inline-block' }}>
           Start for $45.99/mo
         </Link>
       </section>
